@@ -1,0 +1,16 @@
+{
+  "name": "ai-crypto-consultant",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm --workspace server run dev\" \"npm --workspace client run dev\"",
+    "start": "npm --workspace server run start",
+    "build": "npm --workspace client run build && npm --workspace server run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
