@@ -73,6 +73,63 @@ interface PortfolioMetrics {
   positions: any[];
 }
 
+interface Erc8004Contracts {
+  agentRegistry: string | null;
+  hackathonVault: string | null;
+  riskRouter: string | null;
+  reputationRegistry: string | null;
+  validationRegistry: string | null;
+}
+
+interface Erc8004AgentIdentity {
+  agentId: string | null;
+  operatorWallet: string | null;
+  agentWallet: string | null;
+  name: string | null;
+  description: string | null;
+  capabilities: string[];
+  registeredAt: number | null;
+  active: boolean | null;
+  error?: string;
+}
+
+interface Erc8004Status {
+  contracts: Erc8004Contracts;
+  agentId: string | null;
+  onchainProvider: boolean;
+  agentIdentity: Erc8004AgentIdentity;
+  errors: string[];
+}
+
+interface Erc8004Checkpoint {
+  timestamp: string;
+  action: string;
+  pair: string;
+  amountUsd: number;
+  priceUsd: number;
+  confidence: number;
+  intentHash: string;
+  signerAddress: string;
+  checkpointHash?: string;
+}
+
+interface ExecutedTrade {
+  timestamp: string;
+  symbol: string;
+  pair: string;
+  action: 'BUY' | 'SELL';
+  amountUsd: number;
+  priceUsd: number;
+  txid: string[];
+  source: 'manual' | 'automated';
+}
+
+interface ExecutionSummary {
+  executions: ExecutedTrade[];
+  totalCount: number;
+  bySymbol: Record<string, { buys: number; sells: number; netUsd: number }>;
+}
+
 function App() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryKey>(categories[0].key);
@@ -81,6 +138,9 @@ function App() {
   const [assetTab, setAssetTab] = useState<'legitimacy' | 'sustainability' | 'thesis'>('legitimacy');
   const [portfolioMetrics, setPortfolioMetrics] = useState<PortfolioMetrics | null>(null);
   const [sustainabilityReport, setSustainabilityReport] = useState<any>(null);
+  const [erc8004Status, setErc8004Status] = useState<Erc8004Status | null>(null);
+  const [erc8004Checkpoints, setErc8004Checkpoints] = useState<Erc8004Checkpoint[]>([]);
+  const [executions, setExecutions] = useState<ExecutionSummary | null>(null);
   const [logs, setLogs] = useState<any[]>([]);
   const [command, setCommand] = useState('');
   const [commandResponse, setCommandResponse] = useState<string>('');
@@ -89,11 +149,14 @@ function App() {
 
   useEffect(() => {
     async function load() {
-      const [assetRes, portfolioRes, perfRes, reportRes] = await Promise.all([
+      const [assetRes, portfolioRes, perfRes, reportRes, ercStatusRes, ercCheckpointsRes, execRes] = await Promise.all([
         axios.get<Asset[]>('/api/assets'),
         axios.get('/api/portfolio'),
         axios.get('/api/performance'),
-        axios.get('/api/sustainability_report')
+        axios.get('/api/sustainability_report'),
+        axios.get<Erc8004Status>('/api/erc8004/status'),
+        axios.get<Erc8004Checkpoint[]>('/api/erc8004/checkpoints'),
+        axios.get<ExecutionSummary>('/api/executions')
       ]);
       setAssets(assetRes.data);
       setSelectedAssets(portfolioRes.data.selected || []);
@@ -103,6 +166,9 @@ function App() {
       });
       setPortfolioMetrics(perfRes.data);
       setSustainabilityReport(reportRes.data);
+      setErc8004Status(ercStatusRes.data);
+      setErc8004Checkpoints(ercCheckpointsRes.data);
+      setExecutions(execRes.data);
     }
     load();
   }, []);
@@ -125,10 +191,18 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      const perf = await axios.get<PortfolioMetrics>('/api/performance');
+      const [perf, report, ercStatusRes, ercCheckpointsRes, execRes] = await Promise.all([
+        axios.get<PortfolioMetrics>('/api/performance'),
+        axios.get('/api/sustainability_report'),
+        axios.get<Erc8004Status>('/api/erc8004/status'),
+        axios.get<Erc8004Checkpoint[]>('/api/erc8004/checkpoints'),
+        axios.get<ExecutionSummary>('/api/executions')
+      ]);
       setPortfolioMetrics(perf.data);
-      const report = await axios.get('/api/sustainability_report');
       setSustainabilityReport(report.data);
+      setErc8004Status(ercStatusRes.data);
+      setErc8004Checkpoints(ercCheckpointsRes.data);
+      setExecutions(execRes.data);
     }, 12000);
     return () => clearInterval(interval);
   }, []);
@@ -312,6 +386,42 @@ function App() {
               </div>
             </div>
             <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-6 shadow-glow">
+              <h2 className="text-lg font-semibold text-white">ERC-8004 Transparency</h2>
+              <div className="mt-4 space-y-4 text-slate-300">
+                <div className="rounded-3xl bg-slate-950 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Agent identity</p>
+                  <p className="mt-2 text-sm text-slate-200">ID: {erc8004Status?.agentIdentity.agentId ?? 'Not configured'}</p>
+                  <p className="mt-1 text-sm text-slate-200">Active: {erc8004Status?.agentIdentity.active === null ? 'Unknown' : erc8004Status?.agentIdentity.active ? 'Yes' : 'No'}</p>
+                  <p className="mt-1 text-sm text-slate-200">Wallet: {erc8004Status?.agentIdentity.agentWallet ?? '—'}</p>
+                  {erc8004Status?.agentIdentity.error && (
+                    <p className="mt-2 text-xs text-amber-300">{erc8004Status.agentIdentity.error}</p>
+                  )}
+                </div>
+                <div className="rounded-3xl bg-slate-950 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Registry contracts</p>
+                  <div className="mt-3 space-y-2 text-sm text-slate-200">
+                    <p>Agent: {erc8004Status?.contracts.agentRegistry ?? '—'}</p>
+                    <p>Vault: {erc8004Status?.contracts.hackathonVault ?? '—'}</p>
+                    <p>RiskRouter: {erc8004Status?.contracts.riskRouter ?? '—'}</p>
+                    <p>Reputation: {erc8004Status?.contracts.reputationRegistry ?? '—'}</p>
+                    <p>Validation: {erc8004Status?.contracts.validationRegistry ?? '—'}</p>
+                  </div>
+                </div>
+                <div className="rounded-3xl bg-slate-950 p-4">
+                  <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Latest checkpoint</p>
+                  {erc8004Checkpoints?.[0] ? (
+                    <div className="mt-3 space-y-2 text-sm text-slate-200">
+                      <p>{new Date(erc8004Checkpoints[0].timestamp).toLocaleString()}</p>
+                      <p>{erc8004Checkpoints[0].action} {erc8004Checkpoints[0].pair} (${erc8004Checkpoints[0].amountUsd})</p>
+                      <p>Confidence: {erc8004Checkpoints[0].confidence}%</p>
+                    </div>
+                  ) : (
+                    <p className="mt-3 text-sm text-slate-400">No ERC-8004 checkpoints found</p>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-6 shadow-glow">
               <h2 className="text-lg font-semibold text-white">Strategy Controls</h2>
               <div className="mt-4 space-y-4 text-slate-300">
                 <button onClick={() => handleCommand('/pause')} className="w-full rounded-2xl bg-slate-800 px-4 py-3 text-left text-sm font-semibold text-slate-100 hover:bg-slate-700">⏸️ /pause</button>
@@ -320,25 +430,73 @@ function App() {
               </div>
             </div>
             <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-6 shadow-glow">
-              <h2 className="text-lg font-semibold text-white">Sustainability Breakdown</h2>
-              <div className="mt-4 h-64">
-                <ResponsiveContainer width="100%" height={220}>
-                  <PieChart>
-                    <Pie data={sustainabilityPie} dataKey="value" nameKey="name" outerRadius={80} innerRadius={36}>
-                      {sustainabilityPie.map((entry) => (
-                        <Cell key={entry.name} fill={sustainabilityPalette[entry.name as keyof typeof sustainabilityPalette]} />
-                      ))}
-                    </Pie>
-                    <Tooltip formatter={(value: number) => `${value} assets`} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="mt-4 space-y-2 text-sm text-slate-400">
-                <p>Green: {sustainabilityPie.find((item) => item.name === 'Green')?.value ?? 0}</p>
-                <p>Yellow: {sustainabilityPie.find((item) => item.name === 'Yellow')?.value ?? 0}</p>
-                <p>Red: {sustainabilityPie.find((item) => item.name === 'Red')?.value ?? 0}</p>
+              <h2 className="text-lg font-semibold text-white">Manual Trade Commands</h2>
+              <p className="mt-2 text-xs text-slate-400">Test ERC-8004 & Kraken integration with manual trades</p>
+              <div className="mt-4 space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="e.g., PEPE 100"
+                    className="flex-1 rounded-2xl bg-slate-800 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleCommand(`/buy ${(e.target as HTMLInputElement).value}`);
+                    }}
+                  />
+                  <button onClick={(e) => {
+                    const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                    handleCommand(`/buy ${input.value}`);
+                    input.value = '';
+                  }} className="rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-500">💰 BUY</button>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="e.g., PEPE 100"
+                    className="flex-1 rounded-2xl bg-slate-800 px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-400"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleCommand(`/sell ${(e.target as HTMLInputElement).value}`);
+                    }}
+                  />
+                  <button onClick={(e) => {
+                    const input = (e.currentTarget.previousElementSibling as HTMLInputElement);
+                    handleCommand(`/sell ${input.value}`);
+                    input.value = '';
+                  }} className="rounded-2xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-500">📉 SELL</button>
+                </div>
               </div>
             </div>
+            <div className="rounded-3xl border border-slate-800 bg-slate-900/80 p-6 shadow-glow">
+              <h2 className="text-lg font-semibold text-white">Execution History</h2>
+              <p className="mt-2 text-xs text-slate-400">💰 = Locked-in positions (actual buys)</p>
+              <div className="mt-4 space-y-2 max-h-[300px] overflow-y-auto">
+                {executions && executions.executions.length > 0 ? (
+                  <>
+                    <div className="mb-3 rounded-2xl bg-slate-950 p-3">
+                      <p className="text-xs uppercase tracking-[0.1em] text-slate-500">Summary by asset</p>
+                      <div className="mt-2 space-y-1 text-sm text-slate-300">
+                        {Object.entries(executions.bySymbol).map(([symbol, data]: [string, any]) => (
+                          <p key={symbol}>
+                            {symbol}: 🟢 +${data.buys.toFixed(2)} | 🔴 -${data.sells.toFixed(2)} | Net: ${data.netUsd.toFixed(2)}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                    {executions.executions.slice(0, 5).map((trade, i) => (
+                      <div key={i} className="rounded-2xl bg-slate-950 p-3">
+                        <p className="text-xs text-slate-400">{new Date(trade.timestamp).toLocaleString()}</p>
+                        <p className="mt-1 text-sm font-semibold text-white">
+                          {trade.action === 'BUY' ? '🟢' : '🔴'} {trade.action} ${trade.amountUsd} of {trade.symbol}
+                        </p>
+                        <p className="text-xs text-slate-500">@ ${trade.priceUsd.toFixed(2)} | {trade.source}</p>
+                      </div>
+                    ))}
+                  </>
+                ) : (
+                  <p className="text-sm text-slate-400">No executions yet. Use manual trade commands above to lock in positions.</p>
+                )}
+              </div>
+            </div>
+
           </aside>
         </section>
 

@@ -8,9 +8,21 @@
   "scripts": {
     "dev": "concurrently \"npm --workspace server run dev\" \"npm --workspace client run dev\"",
     "start": "npm --workspace server run start",
-    "build": "npm --workspace client run build && npm --workspace server run build"
+    "build": "npm --workspace client run build && npm --workspace server run build",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat run scripts/deploy.ts --network sepolia",
+    "register": "npx ts-node scripts/register-agent.ts",
+    "run-agent": "npx ts-node scripts/run-agent.ts",
+    "dashboard": "npx ts-node scripts/dashboard.ts",
+    "test": "npx hardhat test"
   },
   "devDependencies": {
-    "concurrently": "^8.2.0"
+    "concurrently": "^8.2.0",
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "@openzeppelin/contracts": "^5.6.1",
+    "@types/node": "^20.10.0",
+    "hardhat": "^2.19.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.2"
   }
 }

@@ -1,6 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
+import {
+  initializeKrakenClient,
+  getKrakenClient,
+  isPaperTradingMode,
+  getTradingMode,
+  fetchMarketData,
+  fetchAccountBalance,
+  executeOrder,
+  fetchOpenOrders,
+  checkConnectionStatus,
+  calculateOrderVolume
+} from './services/kraken-service';
+import { DecisionEngine, formatDecisionForStream } from './services/decision-engine';
+import { getErc8004Status, getErc8004Checkpoints } from './erc8004/service';
+import { initializeErc8004Startup } from './erc8004/init';
 
 const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
@@ -309,13 +324,12 @@ const assetList: Asset[] = [
 ];
 
 const portfolioState: PortfolioState = {
-  selected: ['BTC', 'ETH', 'SOL', 'ALGO'],
-  allocations: { BTC: 35, ETH: 30, SOL: 20, ALGO: 15 },
+  selected: ['PEPE'],
+  allocations: { PEPE: 100 },
   controls: { sustainabilityTarget: 80, legitimacyMin: 70, trading: 'running' }
 };
 
 const krakenPairMap: Record<string, string> = {
-  BTC: 'XBT/USD',
   ETH: 'ETH/USD',
   SOL: 'SOL/USD',
   ADA: 'ADA/USD',
@@ -329,13 +343,27 @@ const krakenPairMap: Record<string, string> = {
   PEPE: 'PEPE/USD'
 };
 
+interface ExecutedTrade {
+  timestamp: string;
+  symbol: string;
+  pair: string;
+  action: 'BUY' | 'SELL';
+  amountUsd: number;
+  priceUsd: number;
+  txid: string[];
+  source: 'manual' | 'automated';
+}
+
+const executedTrades: ExecutedTrade[] = [];
+
 const agentState = {
   trading: 'running' as 'running' | 'paused' | 'stopped',
   sustainabilityTarget: 80,
   legitimacyMin: 70,
   lastDecision: null as null | Record<string, any>,
   listeners: new Set<express.Response>(),
-  intervalId: null as NodeJS.Timeout | null
+  intervalId: null as NodeJS.Timeout | null,
+  decisionEngine: null as DecisionEngine | null
 };
 
 function formatDecision(message: string, details: any = {}) {
@@ -356,29 +384,90 @@ function broadcastDecision(decision: Record<string, any>) {
 
 async function streamAgentDecisions() {
   if (agentState.intervalId) return;
+
+  // Initialize decision engine with current portfolio
+  const portfolio = await getPortfolio();
+  agentState.decisionEngine = new DecisionEngine({
+    sustainabilityTarget: agentState.sustainabilityTarget,
+    legitimacyMin: agentState.legitimacyMin,
+    maxOrderUsd: 500,
+    selectedAssets: portfolio.selected || ['PEPE'],
+    krakenPairMap
+  });
+
+  console.log('[Agent] Decision engine initialized with real Kraken integration');
+
   agentState.intervalId = setInterval(async () => {
-    if (agentState.trading !== 'running') return;
-    const portfolio = await getPortfolio();
-    const weights = portfolio.allocations || {};
-    const selected = portfolio.selected || [];
-    if (!selected.length) return;
-    const chosenSymbol = selected[Math.floor(Math.random() * selected.length)];
-    const message = `🔍 Scanning portfolio for rebalancing opportunities...`;
-    broadcastDecision(formatDecision(message, { portfolioSize: selected.length }));
-    const change = Math.round((Math.random() * 3 + 1) * 10) / 10;
-    const secondary = `🌿 Portfolio sustainability target is ${agentState.sustainabilityTarget}, reviewing ${chosenSymbol}.`;
-    broadcastDecision(formatDecision(secondary, { symbol: chosenSymbol, target: agentState.sustainabilityTarget }));
-    const action = Math.random() > 0.5 ? 'BUY' : 'SELL';
-    const amount = Math.floor(Math.random() * 500 + 120);
-    const executed = `✅ Decision: ${action} $${amount} of ${chosenSymbol} to align with strategy.`;
-    broadcastDecision(formatDecision(executed, { action, amount, symbol: chosenSymbol }));
-  }, 5500);
+    if (agentState.trading !== 'running' || !agentState.decisionEngine) return;
+
+    try {
+      const portfolio = await getPortfolio();
+      const selected = portfolio.selected || [];
+
+      if (!selected.length) {
+        broadcastDecision(formatDecision('⚠️ No assets selected. Add assets to your portfolio to begin trading.'));
+        return;
+      }
+
+      // Broadcast status
+      broadcastDecision(
+        formatDecision(
+          `🔍 Agent scanning ${selected.length} asset(s) for trading opportunities...`,
+          {
+            portfolioSize: selected.length,
+            mode: getTradingMode(),
+            sustainabilityTarget: agentState.sustainabilityTarget
+          }
+        )
+      );
+
+      // Run portfolio analysis with real Kraken data
+      const results = await agentState.decisionEngine.analyzePortfolio();
+
+      // Broadcast each result
+      for (const result of results) {
+        if (result.executed) {
+          broadcastDecision(
+            formatDecision(
+              `✅ ${result.message}`,
+              {
+                action: result.decision?.action,
+                amount: result.decision?.amount,
+                pair: result.decision?.pair,
+                txid: result.txid,
+                mode: result.tradingMode
+              }
+            )
+          );
+        } else if (result.decision) {
+          broadcastDecision(
+            formatDecision(
+              `📊 ${result.decision.asset}: ${result.decision.action} (${(result.decision.confidence * 100).toFixed(0)}% confidence)`,
+              {
+                action: result.decision.action,
+                reasoning: result.decision.reasoning,
+                confidence: result.decision.confidence
+              }
+            )
+          );
+        } else {
+          broadcastDecision(formatDecision(result.message));
+        }
+      }
+    } catch (error) {
+      console.error('[Agent] Error in decision loop:', error);
+      broadcastDecision(
+        formatDecision(`❌ Agent error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      );
+    }
+  }, 8000); // Check portfolio every 8 seconds (was 5.5)
 }
 
 function stopAgentStream() {
   if (agentState.intervalId) {
     clearInterval(agentState.intervalId);
     agentState.intervalId = null;
+    agentState.decisionEngine = null;
   }
 }
 
@@ -577,18 +666,27 @@ app.post('/api/agent/command', async (req, res) => {
 
   if (normalized === '/pause') {
     agentState.trading = 'paused';
+    if (agentState.decisionEngine) {
+      agentState.decisionEngine.setMode('paused');
+    }
     broadcastDecision(formatDecision('⏸️ Agent paused by user command.', { command }));
     return res.json({ status: 'paused' });
   }
 
   if (normalized === '/resume') {
     agentState.trading = 'running';
+    if (agentState.decisionEngine) {
+      agentState.decisionEngine.setMode('running');
+    }
     broadcastDecision(formatDecision('▶️ Agent resumed trading.', { command }));
     return res.json({ status: 'running' });
   }
 
   if (normalized === '/stop') {
     agentState.trading = 'stopped';
+    if (agentState.decisionEngine) {
+      agentState.decisionEngine.setMode('stopped');
+    }
     broadcastDecision(formatDecision('🛑 Agent stopped and preparing to liquidate into stablecoins.', { command }));
     return res.json({ status: 'stopped' });
   }
@@ -646,6 +744,110 @@ app.post('/api/agent/command', async (req, res) => {
     return res.json({ sustainability: Number(average.toFixed(1)), target: agentState.sustainabilityTarget });
   }
 
+  // Manual BUY command: /buy SYMBOL USD_AMOUNT
+  if (normalized.startsWith('/buy ')) {
+    const parts = normalized.split(' ');
+    const symbol = (parts[1] || '').toUpperCase();
+    const amountUsd = Number(parts[2] || '0');
+
+    if (!symbol || amountUsd <= 0 || !krakenPairMap[symbol]) {
+      return res.status(400).json({ error: `Usage: /buy SYMBOL AMOUNT (e.g., /buy PEPE 100). Unknown symbol or invalid amount.` });
+    }
+
+    try {
+      const pair = krakenPairMap[symbol];
+      const marketData = await fetchMarketData(pair);
+      if (!marketData) {
+        return res.status(500).json({ error: `Could not fetch market data for ${symbol}` });
+      }
+
+      const volume = calculateOrderVolume(amountUsd, marketData.price);
+      const result = await executeOrder({
+        pair,
+        type: 'buy',
+        ordertype: 'market',
+        volume
+      });
+
+      if (!result) {
+        return res.status(500).json({ error: `Order execution failed for ${symbol}` });
+      }
+
+      const trade: ExecutedTrade = {
+        timestamp: new Date().toISOString(),
+        symbol,
+        pair,
+        action: 'BUY',
+        amountUsd,
+        priceUsd: marketData.price,
+        txid: result.txid,
+        source: 'manual'
+      };
+      executedTrades.push(trade);
+
+      const msg = `✅ Manual BUY executed: $${amountUsd} of ${symbol} at $${marketData.price.toFixed(2)}`;
+      broadcastDecision(formatDecision(msg, { command, trade }));
+      return res.json({ success: true, trade });
+    } catch (error) {
+      return res.status(500).json({
+        error: 'BUY command failed',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
+  // Manual SELL command: /sell SYMBOL USD_AMOUNT
+  if (normalized.startsWith('/sell ')) {
+    const parts = normalized.split(' ');
+    const symbol = (parts[1] || '').toUpperCase();
+    const amountUsd = Number(parts[2] || '0');
+
+    if (!symbol || amountUsd <= 0 || !krakenPairMap[symbol]) {
+      return res.status(400).json({ error: `Usage: /sell SYMBOL AMOUNT (e.g., /sell PEPE 100). Unknown symbol or invalid amount.` });
+    }
+
+    try {
+      const pair = krakenPairMap[symbol];
+      const marketData = await fetchMarketData(pair);
+      if (!marketData) {
+        return res.status(500).json({ error: `Could not fetch market data for ${symbol}` });
+      }
+
+      const volume = calculateOrderVolume(amountUsd, marketData.price);
+      const result = await executeOrder({
+        pair,
+        type: 'sell',
+        ordertype: 'market',
+        volume
+      });
+
+      if (!result) {
+        return res.status(500).json({ error: `Order execution failed for ${symbol}` });
+      }
+
+      const trade: ExecutedTrade = {
+        timestamp: new Date().toISOString(),
+        symbol,
+        pair,
+        action: 'SELL',
+        amountUsd,
+        priceUsd: marketData.price,
+        txid: result.txid,
+        source: 'manual'
+      };
+      executedTrades.push(trade);
+
+      const msg = `✅ Manual SELL executed: $${amountUsd} of ${symbol} at $${marketData.price.toFixed(2)}`;
+      broadcastDecision(formatDecision(msg, { command, trade }));
+      return res.json({ success: true, trade });
+    } catch (error) {
+      return res.status(500).json({
+        error: 'SELL command failed',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
   return res.status(400).json({ error: 'Unknown command' });
 });
 
@@ -654,9 +856,254 @@ app.get('/api/market', async (req, res) => {
   res.json({ prices });
 });
 
+// ─────────────────────────────────────────────────────────────────────────
+// Kraken Trading Integration Endpoints
+// ─────────────────────────────────────────────────────────────────────────
+
+/**
+ * GET /api/kraken/status
+ * Check Kraken connection and trading mode
+ */
+app.get('/api/kraken/status', async (req, res) => {
+  const status = await checkConnectionStatus();
+  res.json(status);
+});
+
+app.get('/api/erc8004/status', async (_req, res) => {
+  try {
+    const status = await getErc8004Status();
+    res.json(status);
+  } catch (error) {
+    res.status(500).json({
+      error: 'Failed to retrieve ERC-8004 status',
+      message: error instanceof Error ? error.message : 'unknown error'
+    });
+  }
+});
+
+app.get('/api/erc8004/checkpoints', (_req, res) => {
+  const checkpoints = getErc8004Checkpoints();
+  res.json(checkpoints);
+});
+
+/**
+ * GET /api/executions
+ * Get history of executed trades (locked-in positions)
+ */
+app.get('/api/executions', (_req, res) => {
+  res.json({
+    executions: executedTrades,
+    totalCount: executedTrades.length,
+    bySymbol: executedTrades.reduce((acc, trade) => {
+      if (!acc[trade.symbol]) {
+        acc[trade.symbol] = { buys: 0, sells: 0, netUsd: 0 };
+      }
+      if (trade.action === 'BUY') {
+        acc[trade.symbol].buys += trade.amountUsd;
+        acc[trade.symbol].netUsd += trade.amountUsd;
+      } else {
+        acc[trade.symbol].sells += trade.amountUsd;
+        acc[trade.symbol].netUsd -= trade.amountUsd;
+      }
+      return acc;
+    }, {} as Record<string, any>)
+  });
+});
+
+/**
+ * GET /api/kraken/mode
+ * Get current trading mode (paper or live)
+ */
+app.get('/api/kraken/mode', (req, res) => {
+  const mode = getTradingMode();
+  const isPaper = isPaperTradingMode();
+  res.json({
+    mode,
+    isPaper,
+    label: isPaper ? '📄 PAPER TRADING' : '💰 LIVE TRADING',
+    warning: !isPaper ? 'Real money trading is ENABLED. All orders will execute with real funds.' : 'Paper trading mode — no real funds affected.'
+  });
+});
+
+/**
+ * GET /api/kraken/ticker/:pair
+ * Fetch live ticker data for a trading pair
+ * Example: /api/kraken/ticker/XBT%2FUSD
+ */
+app.get('/api/kraken/ticker/:pair', async (req, res) => {
+  const pair = decodeURIComponent(req.params.pair);
+  const marketData = await fetchMarketData(pair);
+  
+  if (!marketData) {
+    return res.status(500).json({ error: `Failed to fetch ticker for pair: ${pair}` });
+  }
+
+  res.json({
+    pair: marketData.pair,
+    price: marketData.price,
+    bid: marketData.bid,
+    ask: marketData.ask,
+    volume: marketData.volume,
+    vwap: marketData.vwap,
+    high: marketData.high,
+    low: marketData.low,
+    timestamp: marketData.timestamp,
+    spread: ((marketData.ask - marketData.bid) / marketData.price * 100).toFixed(3)
+  });
+});
+
+/**
+ * GET /api/kraken/balance
+ * Fetch account balance (requires API credentials)
+ */
+app.get('/api/kraken/balance', async (req, res) => {
+  const balance = await fetchAccountBalance();
+
+  if (!balance) {
+    return res.status(500).json({
+      error: 'Failed to fetch account balance. Check API credentials and network connection.',
+      mode: getTradingMode()
+    });
+  }
+
+  // Convert balance object to readable format
+  const formatted = Object.entries(balance).reduce((acc, [asset, amount]) => {
+    acc[asset] = parseFloat(amount as string);
+    return acc;
+  }, {} as Record<string, number>);
+
+  res.json({
+    balances: formatted,
+    timestamp: new Date().toISOString(),
+    mode: getTradingMode()
+  });
+});
+
+/**
+ * GET /api/kraken/orders
+ * Get open orders (requires API credentials)
+ */
+app.get('/api/kraken/orders', async (req, res) => {
+  const orders = await fetchOpenOrders();
+
+  if (!orders) {
+    return res.status(500).json({
+      error: 'Failed to fetch open orders',
+      mode: getTradingMode()
+    });
+  }
+
+  res.json({
+    orders,
+    count: Object.keys(orders).length,
+    timestamp: new Date().toISOString(),
+    mode: getTradingMode()
+  });
+});
+
+/**
+ * POST /api/kraken/order
+ * Place a market or limit order
+ *
+ * Request body:
+ * {
+ *   "pair": "XBT/USD",
+ *   "type": "buy" | "sell",
+ *   "ordertype": "market" | "limit",
+ *   "amount": 1000,  // USD amount
+ *   "price": 45000   // for limit orders only
+ * }
+ */
+app.post('/api/kraken/order', async (req, res) => {
+  const { pair, type, ordertype, amount, price } = req.body;
+
+  // Validate input
+  if (!pair || !type || !ordertype || !amount) {
+    return res.status(400).json({
+      error: 'Missing required fields: pair, type, ordertype, amount'
+    });
+  }
+
+  if (!['buy', 'sell'].includes(type)) {
+    return res.status(400).json({ error: 'Type must be "buy" or "sell"' });
+  }
+
+  if (!['market', 'limit'].includes(ordertype)) {
+    return res.status(400).json({ error: 'Ordertype must be "market" or "limit"' });
+  }
+
+  if (ordertype === 'limit' && !price) {
+    return res.status(400).json({ error: 'Price is required for limit orders' });
+  }
+
+  try {
+    // Fetch current price to calculate volume
+    const marketData = await fetchMarketData(pair);
+    if (!marketData) {
+      return res.status(500).json({ error: `Could not fetch market data for ${pair}` });
+    }
+
+    // Use provided price or market price for volume calculation
+    const priceForCalc = ordertype === 'limit' ? price : marketData.price;
+    const volume = calculateOrderVolume(amount, priceForCalc);
+
+    // Execute the order
+    const order = {
+      pair,
+      type: type as 'buy' | 'sell',
+      ordertype: ordertype as 'market' | 'limit',
+      volume,
+      ...(price && { price: price.toString() })
+    };
+
+    const result = await executeOrder(order);
+
+    if (!result) {
+      return res.status(500).json({
+        error: 'Failed to execute order',
+        mode: getTradingMode(),
+        details: isPaperTradingMode()
+          ? 'Paper trading is enabled. Run `kraken paper init` and verify KRAKEN_SANDBOX=true before placing orders.'
+          : 'Check logs for more information.'
+      });
+    }
+
+    res.json({
+      success: true,
+      txid: result.txid,
+      descr: result.descr,
+      order: {
+        pair,
+        type,
+        ordertype,
+        amount,
+        price: ordertype === 'limit' ? price : 'market',
+        volume,
+        executedAt: new Date().toISOString()
+      },
+      mode: getTradingMode(),
+      warning: isPaperTradingMode() ? '📄 This is a PAPER TRADE - no real funds were used.' : '💰 LIVE TRADE EXECUTED - Real funds have been transferred.'
+    });
+  } catch (error) {
+    console.error('[API] Order execution error:', error);
+    res.status(500).json({
+      error: 'Order execution failed',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      mode: getTradingMode()
+    });
+  }
+});
+
 app.use(express.static('../client/dist'));
 
 app.listen(PORT, () => {
+  initializeKrakenClient();
+  initializeErc8004Startup().catch((error) => {
+    console.error('[ERC8004] Startup initialization error:', error);
+  });
   streamAgentDecisions();
-  console.log(`AI Crypto Agent backend running on http://localhost:${PORT}`);
+  console.log(`\n╔════════════════════════════════════════════════════════════╗`);
+  console.log(`║  AI Crypto Agent backend running on http://localhost:${PORT}  ║`);
+  console.log(`║  Trading Mode: ${isPaperTradingMode() ? '📄 PAPER TRADING (Sandbox)' : '💰 LIVE TRADING'}                        ║`);
+  console.log(`╚════════════════════════════════════════════════════════════╝\n`);
 });

@@ -23,7 +23,8 @@
 
 import { execFile } from "child_process";
 import { promisify } from "util";
-import { KrakenOrder, KrakenOrderResult, MarketData } from "../types/index";
+import { KrakenOrder, KrakenOrderResult, MarketData } from "../types";
+import 'dotenv/config';
 
 const execFileAsync = promisify(execFile);
 
@@ -40,6 +41,9 @@ export class KrakenClient {
     this.sandbox = process.env.KRAKEN_SANDBOX === "true";
     this.apiKey = process.env.KRAKEN_API_KEY || "";
     this.apiSecret = process.env.KRAKEN_API_SECRET || "";
+
+    console.log("CLI KRAKEN BIN:");
+    console.log(KRAKEN_BIN);
 
     if (!this.apiKey || !this.apiSecret) {
       console.warn("[kraken] No API credentials set — private commands will fail");
@@ -144,7 +148,10 @@ export class KrakenClient {
     const result = await this.run(args, !this.sandbox) as KrakenOrderResponse;
 
     if (result.error?.length) {
-      throw new Error(`[kraken] Order error: ${result.error.join(", ")}`);
+      const hint = this.sandbox
+        ? ' In sandbox mode, ensure you have run `kraken paper init` and that KRAKEN_SANDBOX=true.'
+        : '';
+      throw new Error(`[kraken] Order error: ${result.error.join(", ")}.${hint}`);
     }
 
     return {
