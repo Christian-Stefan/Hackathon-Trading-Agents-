@@ -1,2 +1,3 @@
-# Hackathon-Trading-Agents-
-This hackathon focuses on one of the most critical challenges in AI today: enabling agents to operate with verifiable trust and real financial capability.    Participants will build AI trading and financial agents that can:   1. Safely interact with capital 2. Execute strategies 3. Demonstrate transparent behavior.   
+# Hackathon-Finance-Agents
+Circle (NYSE: CRCL) is a global financial technology firm that enables businesses of all sizes to harness the power of digital currencies and public blockchains for payments, commerce, and financial applications worldwide. Circle is building the world’s largest, most-widely used, stablecoin network, and issues, through its regulated affiliates, USDC and EURC stablecoins. 
+Arc is the purpose-built L1 blockchain from Circle and serves as the Economic OS for the internet — powering the programmable trust layer and transaction engine where capital, humans, and machines coordinate to drive real economic growth.  
