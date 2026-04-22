@@ -1,0 +1,156 @@
+4/22/2026, 11:05:15 PM [INFO] Server is running on http://localhost:7770
+4/22/2026, 11:05:18 PM [DEBUG] GET http://localhost/
+4/22/2026, 11:05:18 PM [DEBUG] GET http://localhost/assets/index-DxZRgRa2.js
+4/22/2026, 11:05:18 PM [DEBUG] GET http://localhost/assets/rolldown-runtime-Dw2cE7zH.js
+4/22/2026, 11:05:18 PM [DEBUG] GET http://localhost/assets/react-CcBpSGlC.js
+4/22/2026, 11:05:18 PM [DEBUG] GET http://localhost/assets/recharts-0IPk8ytH.js
+4/22/2026, 11:05:18 PM [DEBUG] GET http://localhost/assets/index-Txw2wMF6.css
+4/22/2026, 11:05:19 PM [DEBUG] GET http://localhost/api/config
+4/22/2026, 11:05:19 PM [DEBUG] GET http://localhost/api/commands
+4/22/2026, 11:05:19 PM [DEBUG] GET http://localhost/favicon.svg
+4/22/2026, 11:05:19 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/22/2026, 11:05:19 PM [DEBUG] POST http://localhost/api/auth?
+4/22/2026, 11:05:19 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/22/2026, 11:05:19 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:05:19 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:05:24 PM [DEBUG] POST http://localhost/api/chat
+4/22/2026, 11:05:24 PM [DEBUG] Chat created: {"id":"0moajknhb00076mwpp","name":"My first chat","creatorID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","createdAt":"2026-04-22T21:05:24.192Z"}
+4/22/2026, 11:05:24 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moajknhb00076mwpp&offset=0&limit=20
+4/22/2026, 11:05:24 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:05:24 PM [DEBUG] New user message: {"id":"0moajkni4000cvhei0","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moajknhb00076mwpp","body":{"type":"command","content":"hello"},"threadID":"0moajkni40018fy510","createdAt":"2026-04-22T21:05:24.220Z"}
+4/22/2026, 11:05:24 PM [DEBUG] New system response: [{"id":"0moajkni6000zl0nzy","senderID":"system","body":{"type":"text","content":"What is your name?"},"reply":{"bodyType":"text"},"scene":"hello","step":"name","threadID":"0moajkni40018fy510","replyTo":"0moajkni4000cvhei0","chatID":"0moajknhb00076mwpp","createdAt":"2026-04-22T21:05:24.222Z"}]
+4/22/2026, 11:05:27 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:05:27 PM [DEBUG] New user message: {"id":"0moajkpu70001ze7is","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moajknhb00076mwpp","replyTo":"0moajkni6000zl0nzy","body":{"type":"text","content":"Brian"},"threadID":"0moajkni40018fy510","createdAt":"2026-04-22T21:05:27.247Z","scene":"hello","step":"name"}
+4/22/2026, 11:05:27 PM [DEBUG] New system response: [{"id":"0moajkpun000ot4mdd","senderID":"system","body":{"type":"text","content":"Hello, Brian!"},"scene":"hello","threadID":"0moajkni40018fy510","replyTo":"0moajkpu70001ze7is","chatID":"0moajknhb00076mwpp","createdAt":"2026-04-22T21:05:27.263Z"}]
+4/22/2026, 11:09:21 PM [DEBUG] GET http://localhost/
+4/22/2026, 11:09:21 PM [DEBUG] Connection closed: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:09:21 PM [DEBUG] GET http://localhost/api/config
+4/22/2026, 11:09:21 PM [DEBUG] GET http://localhost/api/commands
+4/22/2026, 11:09:21 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/22/2026, 11:09:21 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moajknhb00076mwpp&offset=0&limit=20
+4/22/2026, 11:09:21 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:09:21 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:09:21 PM [DEBUG] GET http://localhost/favicon.ico
+4/22/2026, 11:09:44 PM [INFO] Server is running on http://localhost:7770
+4/22/2026, 11:09:45 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:09:45 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:09:46 PM [DEBUG] GET http://localhost/api/config
+4/22/2026, 11:09:46 PM [DEBUG] GET http://localhost/api/commands
+4/22/2026, 11:09:46 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/22/2026, 11:09:46 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moajknhb00076mwpp&offset=0&limit=20
+4/22/2026, 11:09:46 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:09:46 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:09:50 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:09:50 PM [DEBUG] New user message: {"id":"0moajqd7e000719z3y","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moajknhb00076mwpp","body":{"type":"command","content":"curateplaylist"},"threadID":"0moajqd7e001s024dz","createdAt":"2026-04-22T21:09:50.810Z"}
+4/22/2026, 11:09:50 PM [DEBUG] New system response: [{"id":"0moajqd7g0000dp2ec","senderID":"system","body":{"type":"text","content":"What is your name?"},"reply":{"bodyType":"text"},"scene":"curateplaylist","step":"name","threadID":"0moajqd7e001s024dz","replyTo":"0moajqd7e000719z3y","chatID":"0moajknhb00076mwpp","createdAt":"2026-04-22T21:09:50.813Z"}]
+4/22/2026, 11:09:56 PM [DEBUG] Connection closed: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:29:44 PM [DEBUG] Cleanup cycle has been completed
+4/22/2026, 11:37:49 PM [INFO] Server is running on http://localhost:7770
+4/22/2026, 11:37:49 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:37:49 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:37:52 PM [DEBUG] GET http://localhost/api/config
+4/22/2026, 11:37:52 PM [DEBUG] GET http://localhost/api/commands
+4/22/2026, 11:37:52 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/22/2026, 11:37:52 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moajknhb00076mwpp&offset=0&limit=20
+4/22/2026, 11:37:52 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:37:52 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:37:55 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:37:55 PM [DEBUG] New user message: {"id":"0moakqh88000yzipqs","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moajknhb00076mwpp","replyTo":"0moajqd7g0000dp2ec","body":{"type":"text","content":""},"threadID":"0moajqd7e001s024dz","createdAt":"2026-04-22T21:37:55.641Z","scene":"curateplaylist","step":"name"}
+4/22/2026, 11:37:55 PM [DEBUG] New system response: [{"id":"0moakqh8c000wb1l9u","senderID":"system","chatID":"0moajknhb00076mwpp","body":{"type":"text","content":"Unknown step."},"threadID":"0moajqd7e001s024dz","replyTo":"0moakqh88000yzipqs","createdAt":"2026-04-22T21:37:55.644Z"}]
+4/22/2026, 11:38:01 PM [DEBUG] DELETE http://localhost/api/chat?id=0moajknhb00076mwpp
+4/22/2026, 11:38:01 PM [DEBUG] Chat deleted: {"id":"0moajknhb00076mwpp","name":"My first chat","creatorID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","createdAt":"2026-04-22T21:05:24.192Z"}
+4/22/2026, 11:38:09 PM [DEBUG] POST http://localhost/api/chat
+4/22/2026, 11:38:09 PM [DEBUG] Chat created: {"id":"0moakqrqf000gemj2v","name":"Playlist","creatorID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","createdAt":"2026-04-22T21:38:09.255Z"}
+4/22/2026, 11:38:09 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moakqrqf000gemj2v&offset=0&limit=20
+4/22/2026, 11:38:13 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:38:13 PM [DEBUG] New user message: {"id":"0moakqv6z0000fmhiy","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","body":{"type":"command","content":"curateplaylist"},"threadID":"0moakqv6z0015kcj41","createdAt":"2026-04-22T21:38:13.739Z"}
+4/22/2026, 11:38:13 PM [DEBUG] New system response: [{"id":"0moakqv71000zt1ghe","senderID":"system","body":{"type":"text","content":"What kind of music do you like?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"rock","label":"Rock"},{"value":"pop","label":"Pop"},{"value":"hiphop","label":"Hip-Hop"},{"value":"jazz","label":"Jazz"},{"value":"classical","label":"Classical"}]}},"scene":"curateplaylist","step":"genre","threadID":"0moakqv6z0015kcj41","replyTo":"0moakqv6z0000fmhiy","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:38:13.741Z"}]
+4/22/2026, 11:38:23 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:38:23 PM [DEBUG] New user message: {"id":"0moakr2r4000maq8v1","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moakqv71000zt1ghe","body":{"type":"option","content":"rock"},"threadID":"0moakqv6z0015kcj41","createdAt":"2026-04-22T21:38:23.536Z","scene":"curateplaylist","step":"genre"}
+4/22/2026, 11:38:23 PM [DEBUG] New system response: [{"id":"0moakr2rh000ez02rw","senderID":"system","body":{"type":"text","content":"rock, good choice!"},"scene":"curateplaylist","threadID":"0moakqv6z0015kcj41","replyTo":"0moakr2r4000maq8v1","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:38:23.549Z"}]
+4/22/2026, 11:46:29 PM [INFO] Server is running on http://localhost:7770
+4/22/2026, 11:46:31 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:46:31 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:46:31 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:46:31 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:46:33 PM [DEBUG] Connection closed: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:46:35 PM [DEBUG] GET http://localhost/?chat_id=0moakqrqf000gemj2v
+4/22/2026, 11:46:35 PM [DEBUG] Connection closed: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:46:35 PM [DEBUG] GET http://localhost/api/config
+4/22/2026, 11:46:35 PM [DEBUG] GET http://localhost/api/commands
+4/22/2026, 11:46:35 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/22/2026, 11:46:35 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moakqrqf000gemj2v&offset=0&limit=20
+4/22/2026, 11:46:35 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:46:35 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:46:38 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:46:38 PM [DEBUG] New user message: {"id":"0moal1oo5000yjt2xu","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","body":{"type":"command","content":"curateplaylist"},"threadID":"0moal1oo5001xiq7dt","createdAt":"2026-04-22T21:46:38.501Z"}
+4/22/2026, 11:46:38 PM [DEBUG] New system response: [{"id":"0moal1oo9000q4dqyr","senderID":"system","body":{"type":"text","content":"What kind of music do you like?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"rock","label":"Rock"},{"value":"pop","label":"Pop"},{"value":"hiphop","label":"Hip-Hop"},{"value":"jazz","label":"Jazz"},{"value":"classical","label":"Classical"}]}},"scene":"curateplaylist","step":"genre","threadID":"0moal1oo5001xiq7dt","replyTo":"0moal1oo5000yjt2xu","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:46:38.505Z"}]
+4/22/2026, 11:46:43 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:46:43 PM [DEBUG] New user message: {"id":"0moal1sg7000h7nanz","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moal1oo9000q4dqyr","body":{"type":"option","content":"pop"},"threadID":"0moal1oo5001xiq7dt","createdAt":"2026-04-22T21:46:43.399Z","scene":"curateplaylist","step":"genre"}
+4/22/2026, 11:46:43 PM [DEBUG] New system response: [{"id":"0moal1sga0002ux9ye","senderID":"system","body":{"type":"text","content":"How many songs do you want in your playlist?"},"reply":{"bodyType":"number","bodyLimits":{"min":1,"max":10}},"scene":"curateplaylist","step":"quantity","threadID":"0moal1oo5001xiq7dt","replyTo":"0moal1sg7000h7nanz","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:46:43.402Z"}]
+4/22/2026, 11:46:47 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:46:47 PM [DEBUG] New user message: {"id":"0moal1vry000ldhimz","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moal1sga0002ux9ye","body":{"type":"number","content":5},"threadID":"0moal1oo5001xiq7dt","createdAt":"2026-04-22T21:46:47.710Z","scene":"curateplaylist","step":"quantity"}
+4/22/2026, 11:46:47 PM [DEBUG] New system response: [{"id":"0moal1vs8000p5e9py","senderID":"system","body":{"type":"text","content":"What are you making the playlist for?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"party","label":"Party"},{"value":"workout","label":"Workout"},{"value":"chill","label":"Chill"}]}},"scene":"curateplaylist","step":"motivation","threadID":"0moal1oo5001xiq7dt","replyTo":"0moal1vry000ldhimz","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:46:47.721Z"}]
+4/22/2026, 11:46:53 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:46:53 PM [DEBUG] New user message: {"id":"0moal206s000n5fri3","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moal1vs8000p5e9py","body":{"type":"option","content":"chill"},"threadID":"0moal1oo5001xiq7dt","createdAt":"2026-04-22T21:46:53.429Z","scene":"curateplaylist","step":"motivation"}
+4/22/2026, 11:46:53 PM [DEBUG] New system response: [{"id":"0moal206x0001eo2vx","senderID":"system","body":{"type":"text","content":"Got it, I'll assemble a playlist based on your preferences!"},"scene":"curateplaylist","threadID":"0moal1oo5001xiq7dt","replyTo":"0moal206s000n5fri3","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:46:53.433Z"}]
+4/22/2026, 11:53:09 PM [INFO] Server is running on http://localhost:7770
+4/22/2026, 11:53:10 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:53:10 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:53:14 PM [DEBUG] GET http://localhost/?chat_id=0moakqrqf000gemj2v
+4/22/2026, 11:53:14 PM [DEBUG] Connection closed: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:53:14 PM [DEBUG] GET http://localhost/api/config
+4/22/2026, 11:53:14 PM [DEBUG] GET http://localhost/api/commands
+4/22/2026, 11:53:14 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/22/2026, 11:53:14 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moakqrqf000gemj2v&offset=0&limit=20
+4/22/2026, 11:53:14 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:53:14 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:53:19 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:53:19 PM [DEBUG] New user message: {"id":"0moala9u50006rdz84","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","body":{"type":"command","content":"curateplaylist"},"threadID":"0moala9u6000fd73cb","createdAt":"2026-04-22T21:53:19.182Z"}
+4/22/2026, 11:53:19 PM [DEBUG] New system response: [{"id":"0moala9u9000zj701j","senderID":"system","body":{"type":"text","content":"What kind of music do you like?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"rock","label":"Rock"},{"value":"pop","label":"Pop"},{"value":"hiphop","label":"Hip-Hop"},{"value":"jazz","label":"Jazz"},{"value":"classical","label":"Classical"}]}},"scene":"curateplaylist","step":"genre","threadID":"0moala9u6000fd73cb","replyTo":"0moala9u50006rdz84","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:53:19.185Z"}]
+4/22/2026, 11:53:25 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:53:25 PM [DEBUG] New user message: {"id":"0moalaega000pq2jnx","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moala9u9000zj701j","body":{"type":"option","content":"pop"},"threadID":"0moala9u6000fd73cb","createdAt":"2026-04-22T21:53:25.162Z","scene":"curateplaylist","step":"genre"}
+4/22/2026, 11:53:25 PM [DEBUG] New system response: [{"id":"0moalaegm000sgiib7","senderID":"system","body":{"type":"text","content":"How many songs do you want in your playlist?"},"reply":{"bodyType":"number","bodyLimits":{"min":1,"max":10}},"scene":"curateplaylist","step":"quantity","threadID":"0moala9u6000fd73cb","replyTo":"0moalaega000pq2jnx","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:53:25.174Z"}]
+4/22/2026, 11:53:29 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:53:29 PM [DEBUG] New user message: {"id":"0moalai2n000dcadtd","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moalaegm000sgiib7","body":{"type":"number","content":4},"threadID":"0moala9u6000fd73cb","createdAt":"2026-04-22T21:53:29.855Z","scene":"curateplaylist","step":"quantity"}
+4/22/2026, 11:53:29 PM [DEBUG] New system response: [{"id":"0moalai2z000aaz8xt","senderID":"system","body":{"type":"text","content":"What are you making the playlist for?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"party","label":"Party"},{"value":"workout","label":"Workout"},{"value":"chill","label":"Chill"}]}},"scene":"curateplaylist","step":"motivation","threadID":"0moala9u6000fd73cb","replyTo":"0moalai2n000dcadtd","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:53:29.867Z"}]
+4/22/2026, 11:53:33 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:53:33 PM [DEBUG] New user message: {"id":"0moalakrr000bhr6kj","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moalai2z000aaz8xt","body":{"type":"option","content":"chill"},"threadID":"0moala9u6000fd73cb","createdAt":"2026-04-22T21:53:33.351Z","scene":"curateplaylist","step":"motivation"}
+4/22/2026, 11:53:33 PM [DEBUG] New system response: [{"id":"0moalaks40006h8oog","senderID":"system","body":{"type":"text","content":"Are there any other preferences you would like to include?"},"reply":{"bodyType":"text","bodyLimits":{"maxLength":200}},"scene":"curateplaylist","step":"extras","threadID":"0moala9u6000fd73cb","replyTo":"0moalakrr000bhr6kj","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:53:33.364Z"}]
+4/22/2026, 11:53:41 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:53:41 PM [DEBUG] New user message: {"id":"0moalaqz800064uf2f","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moalaks40006h8oog","body":{"type":"text","content":"Make it fun"},"threadID":"0moala9u6000fd73cb","createdAt":"2026-04-22T21:53:41.396Z","scene":"curateplaylist","step":"extras"}
+4/22/2026, 11:53:41 PM [DEBUG] New system response: [{"id":"0moalaqzb000971ph2","senderID":"system","body":{"type":"text","content":"Got it, I'll assemble the playlist based on your preferences."},"reply":{"bodyType":"text","bodyLimits":{"maxLength":200}},"scene":"curateplaylist","step":"extras","threadID":"0moala9u6000fd73cb","replyTo":"0moalaqz800064uf2f","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:53:41.399Z"}]
+4/22/2026, 11:53:48 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:53:48 PM [DEBUG] New user message: {"id":"0moalaw310008dvd14","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moakqrqf000gemj2v","replyTo":"0moalaqzb000971ph2","body":{"type":"text","content":""},"threadID":"0moala9u6000fd73cb","createdAt":"2026-04-22T21:53:48.013Z","scene":"curateplaylist","step":"extras"}
+4/22/2026, 11:53:48 PM [DEBUG] New system response: [{"id":"0moalaw34000sckj5t","senderID":"system","body":{"type":"text","content":"Got it, I'll assemble the playlist based on your preferences."},"reply":{"bodyType":"text","bodyLimits":{"maxLength":200}},"scene":"curateplaylist","step":"extras","threadID":"0moala9u6000fd73cb","replyTo":"0moalaw310008dvd14","chatID":"0moakqrqf000gemj2v","createdAt":"2026-04-22T21:53:48.016Z"}]
+4/22/2026, 11:54:26 PM [INFO] Server is running on http://localhost:7770
+4/22/2026, 11:54:28 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:54:28 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:54:29 PM [DEBUG] GET http://localhost/?chat_id=0moakqrqf000gemj2v
+4/22/2026, 11:54:29 PM [DEBUG] Connection closed: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:54:29 PM [DEBUG] GET http://localhost/api/config
+4/22/2026, 11:54:29 PM [DEBUG] GET http://localhost/api/commands
+4/22/2026, 11:54:29 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/22/2026, 11:54:29 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moakqrqf000gemj2v&offset=0&limit=20
+4/22/2026, 11:54:29 PM [DEBUG] GET http://localhost/api/events
+4/22/2026, 11:54:29 PM [DEBUG] Connection opened: fd8082aa-4599-4598-87f2-63be0b6f8e26
+4/22/2026, 11:54:35 PM [DEBUG] DELETE http://localhost/api/chat?id=0moakqrqf000gemj2v
+4/22/2026, 11:54:35 PM [DEBUG] Chat deleted: {"id":"0moakqrqf000gemj2v","name":"Playlist","creatorID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","createdAt":"2026-04-22T21:38:09.255Z"}
+4/22/2026, 11:54:37 PM [DEBUG] POST http://localhost/api/chat
+4/22/2026, 11:54:37 PM [DEBUG] Chat created: {"id":"0moalby6q000no7wii","name":"Chat #77d767","creatorID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","createdAt":"2026-04-22T21:54:37.394Z"}
+4/22/2026, 11:54:37 PM [DEBUG] GET http://localhost/api/messages?chat_id=0moalby6q000no7wii&offset=0&limit=20
+4/22/2026, 11:54:40 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:54:40 PM [DEBUG] New user message: {"id":"0moalc0gu000dlizxg","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moalby6q000no7wii","body":{"type":"command","content":"curateplaylist"},"threadID":"0moalc0gv0003ybwoo","createdAt":"2026-04-22T21:54:40.351Z"}
+4/22/2026, 11:54:40 PM [DEBUG] New system response: [{"id":"0moalc0gy000t3ki3m","senderID":"system","body":{"type":"text","content":"What kind of music do you like?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"rock","label":"Rock"},{"value":"pop","label":"Pop"},{"value":"hiphop","label":"Hip-Hop"},{"value":"jazz","label":"Jazz"},{"value":"classical","label":"Classical"}]}},"scene":"curateplaylist","step":"genre","threadID":"0moalc0gv0003ybwoo","replyTo":"0moalc0gu000dlizxg","chatID":"0moalby6q000no7wii","createdAt":"2026-04-22T21:54:40.354Z"}]
+4/22/2026, 11:54:42 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:54:42 PM [DEBUG] New user message: {"id":"0moalc2hj000m53opq","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moalby6q000no7wii","replyTo":"0moalc0gy000t3ki3m","body":{"type":"option","content":"jazz"},"threadID":"0moalc0gv0003ybwoo","createdAt":"2026-04-22T21:54:42.967Z","scene":"curateplaylist","step":"genre"}
+4/22/2026, 11:54:42 PM [DEBUG] New system response: [{"id":"0moalc2hu000wg7lzy","senderID":"system","body":{"type":"text","content":"How many songs do you want in your playlist?"},"reply":{"bodyType":"number","bodyLimits":{"min":1,"max":10}},"scene":"curateplaylist","step":"quantity","threadID":"0moalc0gv0003ybwoo","replyTo":"0moalc2hj000m53opq","chatID":"0moalby6q000no7wii","createdAt":"2026-04-22T21:54:42.978Z"}]
+4/22/2026, 11:54:46 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:54:46 PM [DEBUG] New user message: {"id":"0moalc54e000580n9h","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moalby6q000no7wii","replyTo":"0moalc2hu000wg7lzy","body":{"type":"number","content":5},"threadID":"0moalc0gv0003ybwoo","createdAt":"2026-04-22T21:54:46.382Z","scene":"curateplaylist","step":"quantity"}
+4/22/2026, 11:54:46 PM [DEBUG] New system response: [{"id":"0moalc54k00011849c","senderID":"system","body":{"type":"text","content":"What are you making the playlist for?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"party","label":"Party"},{"value":"workout","label":"Workout"},{"value":"chill","label":"Chill"}]}},"scene":"curateplaylist","step":"motivation","threadID":"0moalc0gv0003ybwoo","replyTo":"0moalc54e000580n9h","chatID":"0moalby6q000no7wii","createdAt":"2026-04-22T21:54:46.388Z"}]
+4/22/2026, 11:54:48 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:54:48 PM [DEBUG] New user message: {"id":"0moalc6vz0004lgmaa","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moalby6q000no7wii","replyTo":"0moalc54k00011849c","body":{"type":"option","content":"workout"},"threadID":"0moalc0gv0003ybwoo","createdAt":"2026-04-22T21:54:48.671Z","scene":"curateplaylist","step":"motivation"}
+4/22/2026, 11:54:48 PM [DEBUG] New system response: [{"id":"0moalc6w3000mc1a6o","senderID":"system","body":{"type":"text","content":"Are there any other preferences you would like to include?"},"reply":{"bodyType":"text","bodyLimits":{"maxLength":200}},"scene":"curateplaylist","step":"extras","threadID":"0moalc0gv0003ybwoo","replyTo":"0moalc6vz0004lgmaa","chatID":"0moalby6q000no7wii","createdAt":"2026-04-22T21:54:48.675Z"}]
+4/22/2026, 11:54:53 PM [DEBUG] POST http://localhost/api/message
+4/22/2026, 11:54:53 PM [DEBUG] New user message: {"id":"0moalcaog000sce15i","senderID":"fd8082aa-4599-4598-87f2-63be0b6f8e26","chatID":"0moalby6q000no7wii","replyTo":"0moalc6w3000mc1a6o","body":{"type":"text","content":"None"},"threadID":"0moalc0gv0003ybwoo","createdAt":"2026-04-22T21:54:53.584Z","scene":"curateplaylist","step":"extras"}
+4/22/2026, 11:54:53 PM [DEBUG] New system response: [{"id":"0moalcaot00081yk05","senderID":"system","body":{"type":"text","content":"Playlist complete! You can view it here:"},"scene":"curateplaylist","threadID":"0moalc0gv0003ybwoo","replyTo":"0moalcaog000sce15i","chatID":"0moalby6q000no7wii","createdAt":"2026-04-22T21:54:53.597Z"}]

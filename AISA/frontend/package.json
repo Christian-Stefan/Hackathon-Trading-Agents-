@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@waylis/core": "^0.3.1"
+  }
+}
