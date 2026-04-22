@@ -1,0 +1,18 @@
+# Master Ignore for Monorepo
+# 🛑 NEVER UPLOAD SECRETS
+.env
+.env.*
+*.pem
+
+# Node.js dependencies
+node_modules/
+npm-debug.log
+package-lock.json
+
+# Foundry / Arc build files
+cache/
+out/
+broadcast/
+
+# Not needed infrastructure
+ARC/
