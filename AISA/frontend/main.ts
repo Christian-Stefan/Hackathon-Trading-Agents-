@@ -11,9 +11,7 @@ const genre_step = w.createStep({
             options: [
                 { value: "rock", label: "Rock" },
                 { value: "pop", label: "Pop" },
-                { value: "hiphop", label: "Hip-Hop" },
-                { value: "jazz", label: "Jazz" },
-                { value: "classical", label: "Classical" }
+                { value: "electronic", label: "Electronic"}
             ]
         }
     }
@@ -60,10 +58,27 @@ const extras_step = w.createStep({
 const scene = w.createScene({
     steps: [genre_step, no_songs_step, motivation_step, extras_step],
     handler: async (answers) => {
-
-
-
-        return { type: "text", content: `Playlist complete! You can view it here:` };
+        const response = await fetch('http://localhost:2000/createplaylist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                genre: answers.genre, 
+                quantity: answers.quantity, 
+                motivation: answers.motivation, 
+                extras: answers.extras
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        return [{ type: "text", content: `Playlist complete! You can view it here:` },
+                { type: "text", content: `${data.final_playlist}`}
+        ];
     },
 });
 
