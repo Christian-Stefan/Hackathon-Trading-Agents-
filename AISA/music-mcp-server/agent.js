@@ -39,44 +39,55 @@ async function runAgent(userPrompt) {
     console.log(`🛠️  Gemini decided to call: ${call.name}(${JSON.stringify(call.args)})`);
 
     const result = await mcpClient.callTool({ name: call.name, arguments: call.args });
-    const songData = JSON.parse(result.content[0].text)[0];
     
-    if (!songData) {
+    // Parse the ENTIRE array of tracks, removing the hardcoded [0]
+    const tracks = JSON.parse(result.content[0].text);
+    
+    if (!tracks || tracks.length === 0) {
       console.log("❌ No songs found.");
       return 'none';
     }
 
-    console.log(`\n🎵 Discovered: "${songData.title}" by ${songData.artist}`);
-    console.log(`🔗 Target Wallet: ${songData.walletAddress}`);
+    let playlistResult = [];
 
-    // 3. THE REAL NANOPAYMENT EXECUTION
-    const priceInUSDC = 0.05; 
-    console.log(`\n💸 Initiating real on-chain nanopayment of ${priceInUSDC} USDC...`);
+    // Loop through every song returned by the tool
+    for (const songData of tracks) {
+      console.log(`\n🎵 Discovered: "${songData.title}" by ${songData.artist}`);
+      console.log(`🔗 Target Wallet: ${songData.walletAddress}`);
 
-    try {
-      // Fire the transaction to the Arc network
-      const hash = await walletClient.sendTransaction({
-        to: songData.walletAddress,
-        value: parseEther(priceInUSDC.toString())
-      });
+      // 3. THE REAL NANOPAYMENT EXECUTION
+      const priceInUSDC = 0.05; 
+      console.log(`💸 Initiating real on-chain nanopayment of ${priceInUSDC} USDC for ${songData.title}...`);
 
-      console.log(`⏳ Transaction broadcast! Waiting for block confirmation...`);
-      
-      // Wait for the blockchain to verify the block
-      await publicClient.waitForTransactionReceipt({ hash });
-      
-      console.log(`✅ Payment settled successfully!`);
-      console.log(`🔍 View Receipt: https://testnet.arcscan.app/tx/${hash}`);
-      console.log(`\n🎧 Delivering audio to user: ${songData.audioUrl}`);
+      const accountAddress = account.address;
+      const balance = await publicClient.getBalance({ address: accountAddress });
+      console.log(`🏦 Agent Wallet Balance: ${balance.toString()} wei`);
 
-    } catch (error) {
-      console.error(`\n❌ Payment failed:`, error.shortMessage || error.message);
-      return 'none';
+      try {
+        const hash = await walletClient.sendTransaction({
+          to: songData.walletAddress,
+          value: parseEther(priceInUSDC.toString())
+        });
+
+        console.log(`⏳ Transaction broadcast! Waiting for block confirmation...`);
+        await publicClient.waitForTransactionReceipt({ hash });
+        console.log(`✅ Payment settled successfully! https://testnet.arcscan.app/tx/${hash}`);
+        
+        // Add the successfully paid song to our final list
+        playlistResult.push(`🎵 ${songData.title} by ${songData.artist}`);
+
+      } catch (error) {
+        console.error(`❌ Payment failed for ${songData.title}:`, error.shortMessage || error.message);
+        // We don't return 'none' here so it continues paying for the other songs even if one fails
+      }
     }
 
-    return `${songData.title} by ${songData.artist}`; 
+    // Return the final list to the Express server (and your frontend)
+    return playlistResult.join('\n'); 
+    
   } else {
     console.log(`💬 Gemini says: ${response.text}`);
+    return response.text;
   }
 }
 
@@ -94,7 +105,7 @@ app.listen(port, () => {
 
 console.log("🤖 Agent waking up...");
 // Connect to MCP Server
-const transport = new StdioClientTransport({ command: "node", args: ["server.js"] });
+const transport = new StdioClientTransport({ command: "node", args: ["server.js"], env:process.env});
 const mcpClient = new Client({ name: "hackathon-agent", version: "1.0.0" }, { capabilities: {} });
 await mcpClient.connect(transport);
 console.log("✅ Connected to Music Database MCP Server");
