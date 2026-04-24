@@ -22,7 +22,10 @@ const arcTestnet = {
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-async function runAgent(userPrompt) {
+async function runAgent(userPrompt, ows_mnemonic) {
+  const account = mnemonicToAccount(ows_mnemonic);
+  const walletClient = createWalletClient({ account, chain: arcTestnet, transport: http() });
+
   // 1. Prompt Gemini
   console.log(`\n👤 User: "${userPrompt}"`);
   console.log("🧠 Gemini is thinking...");
@@ -81,10 +84,21 @@ async function runAgent(userPrompt) {
 }
 
 app.post('/createplaylist', async (req, res) => {
-  const { genre, quantity, motivation, extras } = req.body; 
+  const { genre, quantity, motivation, extras, mnemonic } = req.body; 
   const prompt = `Construct a ${motivation} playlist of ${quantity} songs, preferably of genre ${genre} and these extra preferences: ${extras}`;
-  const playlist = await runAgent(prompt); 
+  const playlist = await runAgent(prompt, mnemonic); 
   res.json({ final_playlist: playlist });
+});
+
+app.post('/verify', async (req, res) => {
+  try {
+    const { walletaddress, mnemonic } = req.body; 
+    const hashedaddress = mnemonicToAccount(mnemonic); 
+
+    res.json( { outcome: hashedaddress.address.toLowerCase() === walletaddress.toLowerCase()} );
+  } catch {
+    res.json( { outcome: false});
+  }
 });
 
 // STARTUP 
@@ -109,6 +123,4 @@ const geminiTools = [{
 }];
 
 // Setup wallet and network connections
-const account = mnemonicToAccount(process.env.OWS_MNEMONIC);
 const publicClient = createPublicClient({ chain: arcTestnet, transport: http() });
-const walletClient = createWalletClient({ account, chain: arcTestnet, transport: http() });

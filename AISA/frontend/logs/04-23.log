@@ -117,3 +117,45 @@
 4/23/2026, 10:21:15 PM [DEBUG] New user message: {"id":"0mobxfqq0000cp8owj","senderID":"8edc0d4e-efd5-40d3-bfe4-59f681e5e76c","chatID":"0mobwc3rq000t82x3p","replyTo":"0mobxcr2v000u3dw4i","body":{"type":"text","content":"."},"threadID":"0mobxcist001amvgvl","createdAt":"2026-04-23T20:21:15.912Z","scene":"curateplaylist","step":"extras"}
 4/23/2026, 10:21:20 PM [DEBUG] New system response: [{"id":"0mobxfumm000b4f0mn","senderID":"system","body":{"type":"text","content":"Playlist complete! You can view it here:"},"scene":"curateplaylist","threadID":"0mobxcist001amvgvl","replyTo":"0mobxfqq0000cp8owj","chatID":"0mobwc3rq000t82x3p","createdAt":"2026-04-23T20:21:20.974Z"},{"id":"0mobxfumm001v87h0r","senderID":"system","body":{"type":"text","content":"Electric Dreams by Synthwave"},"scene":"curateplaylist","threadID":"0mobxcist001amvgvl","replyTo":"0mobxfqq0000cp8owj","chatID":"0mobwc3rq000t82x3p","createdAt":"2026-04-23T20:21:20.974Z"}]
 4/23/2026, 10:27:19 PM [DEBUG] Cleanup cycle has been completed
+4/23/2026, 11:11:03 PM [INFO] Server is running on http://localhost:7770
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/assets/index-DxZRgRa2.js
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/assets/rolldown-runtime-Dw2cE7zH.js
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/assets/react-CcBpSGlC.js
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/assets/recharts-0IPk8ytH.js
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/assets/index-Txw2wMF6.css
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/api/commands
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/api/config
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/api/messages?chat_id=0mobwc3rq000t82x3p&offset=0&limit=20
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/api/events
+4/23/2026, 11:11:09 PM [DEBUG] Connection opened: 8edc0d4e-efd5-40d3-bfe4-59f681e5e76c
+4/23/2026, 11:11:09 PM [DEBUG] GET http://localhost/favicon.ico
+4/23/2026, 11:30:25 PM [DEBUG] Cleanup cycle has been completed
+4/23/2026, 11:36:59 PM [INFO] Server is running on http://localhost:7770
+4/23/2026, 11:37:00 PM [DEBUG] GET http://localhost/api/events
+4/23/2026, 11:37:00 PM [DEBUG] Connection opened: 8edc0d4e-efd5-40d3-bfe4-59f681e5e76c
+4/23/2026, 11:37:12 PM [DEBUG] GET http://localhost/api/config
+4/23/2026, 11:37:12 PM [DEBUG] GET http://localhost/api/commands
+4/23/2026, 11:37:12 PM [DEBUG] GET http://localhost/api/chats?offset=0&limit=20
+4/23/2026, 11:37:12 PM [DEBUG] GET http://localhost/api/messages?chat_id=0mobwc3rq000t82x3p&offset=0&limit=20
+4/23/2026, 11:37:12 PM [DEBUG] GET http://localhost/api/events
+4/23/2026, 11:37:12 PM [DEBUG] Connection opened: 8edc0d4e-efd5-40d3-bfe4-59f681e5e76c
+4/23/2026, 11:37:29 PM [DEBUG] POST http://localhost/api/message
+4/23/2026, 11:37:29 PM [DEBUG] New user message: {"id":"0moc05ryk000x599dw","senderID":"8edc0d4e-efd5-40d3-bfe4-59f681e5e76c","chatID":"0mobwc3rq000t82x3p","body":{"type":"command","content":"curateplaylist"},"threadID":"0moc05ryk001weuq2c","createdAt":"2026-04-23T21:37:29.804Z"}
+4/23/2026, 11:37:29 PM [DEBUG] New system response: [{"id":"0moc05ryo0007kxbb5","senderID":"system","body":{"type":"text","content":"What kind of music do you like?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"rock","label":"Rock"},{"value":"pop","label":"Pop"},{"value":"electronic","label":"Electronic"}]}},"scene":"curateplaylist","step":"genre","threadID":"0moc05ryk001weuq2c","replyTo":"0moc05ryk000x599dw","chatID":"0mobwc3rq000t82x3p","createdAt":"2026-04-23T21:37:29.808Z"}]
+4/23/2026, 11:37:35 PM [DEBUG] POST http://localhost/api/message
+4/23/2026, 11:37:35 PM [DEBUG] New user message: {"id":"0moc05wn20009vy3tx","senderID":"8edc0d4e-efd5-40d3-bfe4-59f681e5e76c","chatID":"0mobwc3rq000t82x3p","replyTo":"0moc05ryo0007kxbb5","body":{"type":"option","content":"electronic"},"threadID":"0moc05ryk001weuq2c","createdAt":"2026-04-23T21:37:35.870Z","scene":"curateplaylist","step":"genre"}
+4/23/2026, 11:37:35 PM [DEBUG] New system response: [{"id":"0moc05wng000q5x54h","senderID":"system","body":{"type":"text","content":"How many songs do you want in your playlist?"},"reply":{"bodyType":"number","bodyLimits":{"min":1,"max":10}},"scene":"curateplaylist","step":"quantity","threadID":"0moc05ryk001weuq2c","replyTo":"0moc05wn20009vy3tx","chatID":"0mobwc3rq000t82x3p","createdAt":"2026-04-23T21:37:35.884Z"}]
+4/23/2026, 11:37:39 PM [DEBUG] POST http://localhost/api/message
+4/23/2026, 11:37:39 PM [DEBUG] New user message: {"id":"0moc05zje0004ajsdk","senderID":"8edc0d4e-efd5-40d3-bfe4-59f681e5e76c","chatID":"0mobwc3rq000t82x3p","replyTo":"0moc05wng000q5x54h","body":{"type":"number","content":1},"threadID":"0moc05ryk001weuq2c","createdAt":"2026-04-23T21:37:39.626Z","scene":"curateplaylist","step":"quantity"}
+4/23/2026, 11:37:39 PM [DEBUG] New system response: [{"id":"0moc05zjq0008hk4yq","senderID":"system","body":{"type":"text","content":"What are you making the playlist for?"},"reply":{"bodyType":"option","bodyLimits":{"options":[{"value":"party","label":"Party"},{"value":"workout","label":"Workout"},{"value":"chill","label":"Chill"}]}},"scene":"curateplaylist","step":"motivation","threadID":"0moc05ryk001weuq2c","replyTo":"0moc05zje0004ajsdk","chatID":"0mobwc3rq000t82x3p","createdAt":"2026-04-23T21:37:39.638Z"}]
+4/23/2026, 11:37:43 PM [DEBUG] POST http://localhost/api/message
+4/23/2026, 11:37:43 PM [DEBUG] New user message: {"id":"0moc062em0009fdm9i","senderID":"8edc0d4e-efd5-40d3-bfe4-59f681e5e76c","chatID":"0mobwc3rq000t82x3p","replyTo":"0moc05zjq0008hk4yq","body":{"type":"option","content":"chill"},"threadID":"0moc05ryk001weuq2c","createdAt":"2026-04-23T21:37:43.342Z","scene":"curateplaylist","step":"motivation"}
+4/23/2026, 11:37:43 PM [DEBUG] New system response: [{"id":"0moc062er0009zbwrq","senderID":"system","body":{"type":"text","content":"Are there any other preferences you would like to include?"},"reply":{"bodyType":"text","bodyLimits":{"maxLength":200}},"scene":"curateplaylist","step":"extras","threadID":"0moc05ryk001weuq2c","replyTo":"0moc062em0009fdm9i","chatID":"0mobwc3rq000t82x3p","createdAt":"2026-04-23T21:37:43.347Z"}]
+4/23/2026, 11:37:47 PM [DEBUG] POST http://localhost/api/message
+4/23/2026, 11:37:47 PM [DEBUG] New user message: {"id":"0moc065pp000ymuhw9","senderID":"8edc0d4e-efd5-40d3-bfe4-59f681e5e76c","chatID":"0mobwc3rq000t82x3p","replyTo":"0moc062er0009zbwrq","body":{"type":"text","content":"."},"threadID":"0moc05ryk001weuq2c","createdAt":"2026-04-23T21:37:47.629Z","scene":"curateplaylist","step":"extras"}
+4/23/2026, 11:37:53 PM [DEBUG] New system response: [{"id":"0moc06a1c000cgi635","senderID":"system","body":{"type":"text","content":"Playlist complete! You can view it here:"},"scene":"curateplaylist","threadID":"0moc05ryk001weuq2c","replyTo":"0moc065pp000ymuhw9","chatID":"0mobwc3rq000t82x3p","createdAt":"2026-04-23T21:37:53.232Z"},{"id":"0moc06a1c0017wuzgc","senderID":"system","body":{"type":"text","content":"Electric Dreams by Synthwave"},"scene":"curateplaylist","threadID":"0moc05ryk001weuq2c","replyTo":"0moc065pp000ymuhw9","chatID":"0mobwc3rq000t82x3p","createdAt":"2026-04-23T21:37:53.232Z"}]
+4/23/2026, 11:48:18 PM [DEBUG] Connection closed: 8edc0d4e-efd5-40d3-bfe4-59f681e5e76c
+4/23/2026, 11:48:19 PM [DEBUG] Connection closed: 8edc0d4e-efd5-40d3-bfe4-59f681e5e76c
+4/23/2026, 11:56:53 PM [DEBUG] Cleanup cycle has been completed
