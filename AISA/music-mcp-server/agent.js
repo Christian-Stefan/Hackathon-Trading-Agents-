@@ -40,7 +40,7 @@ async function runAgent(userPrompt, ows_mnemonic) {
     });
   } catch (error) {
     console.log(error);
-    return { outcome: error.message} ;
+    return { outcome: 'Error. Please try again.'} ;
   }
 
   console.log(response);
@@ -95,25 +95,31 @@ async function runAgent(userPrompt, ows_mnemonic) {
       } catch (error) {
         console.error(`❌ Payment failed for ${songData.title}:`, error.shortMessage || error.message);
         // We don't return 'none' here so it continues paying for the other songs even if one fails
+        return { outcome: 'Error. Please try again.'}
       }
     }
 
-    // Pay Business Wallet (they get a cut from user using Agent Service)
-    const agent_fee = 0.01; 
-    console.log(`💸 Initiating real on-chain nanopayment of ${agent_fee} USDC for Agent Usage`); 
-    const hash = await walletClient.sendTransaction({
-      to: process.env.BUSINESS_WALLET,
-      value: parseEther(agent_fee.toString())
-    });
+    try {
+      // Pay Business Wallet (they get a cut from user using Agent Service)
+      const agent_fee = 0.01; 
+      console.log(`💸 Initiating real on-chain nanopayment of ${agent_fee} USDC for Agent Usage`); 
+      const hash = await walletClient.sendTransaction({
+        to: process.env.BUSINESS_WALLET,
+        value: parseEther(agent_fee.toString())
+      });
 
-    console.log(`⏳ Transaction broadcast! Waiting for block confirmation...`);
-    await publicClient.waitForTransactionReceipt({ hash });
-    const transaction_link = `Agent Usage Fee: https://testnet.arcscan.app/tx/${hash}`
-    console.log(`✅ Payment settled successfully! ${transaction_link}`);
-    receipts.push(transaction_link); 
+      console.log(`⏳ Transaction broadcast! Waiting for block confirmation...`);
+      await publicClient.waitForTransactionReceipt({ hash });
+      const transaction_link = `Agent Usage Fee: https://testnet.arcscan.app/tx/${hash}`
+      console.log(`✅ Payment settled successfully! ${transaction_link}`);
+      receipts.push(transaction_link); 
 
-    // Return the final list to the Express server (and your frontend)
-    return { outcome: 'OK', playlist: playlistResult.join('\n'), receipts: receipts.join('\n ') } ; 
+      // Return the final list to the Express server (and your frontend)
+      return { outcome: 'OK', playlist: playlistResult.join('\n'), receipts: receipts.join('\n ') } ; 
+    } catch {
+      return { outcome: 'Error. Please try again.'}
+    }
+    
   } else {
     console.log(`💬 Gemini says: ${response.text}`);
     return response.text;
