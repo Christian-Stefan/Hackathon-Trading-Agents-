@@ -30,11 +30,20 @@ async function runAgent(userPrompt, ows_mnemonic) {
   console.log(`\n👤 User: "${userPrompt}"`);
   console.log("🧠 Gemini is thinking...");
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: userPrompt,
-    config: { tools: geminiTools }
-  });
+  let response;
+
+  try {
+    response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: userPrompt,
+      config: { tools: geminiTools }
+    });
+  } catch (error) {
+    console.log(error);
+    return { outcome: error.message} ;
+  }
+
+  console.log(response);
 
   // 2. Handle Decision & Database Search
   if (response.functionCalls && response.functionCalls.length > 0) {
@@ -54,6 +63,7 @@ async function runAgent(userPrompt, ows_mnemonic) {
     }
 
     let playlistResult = [];
+    let receipts = []; 
 
     // Loop through every song returned by the tool
     for (const songData of tracks) {
@@ -76,20 +86,34 @@ async function runAgent(userPrompt, ows_mnemonic) {
 
         console.log(`⏳ Transaction broadcast! Waiting for block confirmation...`);
         await publicClient.waitForTransactionReceipt({ hash });
-        console.log(`✅ Payment settled successfully! https://testnet.arcscan.app/tx/${hash}`);
+        const transaction_link = `${songData.artist}: https://testnet.arcscan.app/tx/${hash}`
+        console.log(`✅ Payment settled successfully! ${transaction_link}`);
         
         // Add the successfully paid song to our final list
         playlistResult.push(`🎵 ${songData.title} by ${songData.artist}`);
-
+        receipts.push(transaction_link); 
       } catch (error) {
         console.error(`❌ Payment failed for ${songData.title}:`, error.shortMessage || error.message);
         // We don't return 'none' here so it continues paying for the other songs even if one fails
       }
     }
 
+    // Pay Business Wallet (they get a cut from user using Agent Service)
+    const agent_fee = 0.01; 
+    console.log(`💸 Initiating real on-chain nanopayment of ${agent_fee} USDC for Agent Usage`); 
+    const hash = await walletClient.sendTransaction({
+      to: process.env.BUSINESS_WALLET,
+      value: parseEther(agent_fee.toString())
+    });
+
+    console.log(`⏳ Transaction broadcast! Waiting for block confirmation...`);
+    await publicClient.waitForTransactionReceipt({ hash });
+    const transaction_link = `Agent Usage Fee: https://testnet.arcscan.app/tx/${hash}`
+    console.log(`✅ Payment settled successfully! ${transaction_link}`);
+    receipts.push(transaction_link); 
+
     // Return the final list to the Express server (and your frontend)
-    return playlistResult.join('\n'); 
-    
+    return { outcome: 'OK', playlist: playlistResult.join('\n'), receipts: receipts.join('\n ') } ; 
   } else {
     console.log(`💬 Gemini says: ${response.text}`);
     return response.text;
@@ -99,8 +123,8 @@ async function runAgent(userPrompt, ows_mnemonic) {
 app.post('/createplaylist', async (req, res) => {
   const { genre, quantity, motivation, extras, mnemonic } = req.body; 
   const prompt = `Construct a ${motivation} playlist of ${quantity} songs, preferably of genre ${genre} and these extra preferences: ${extras}`;
-  const playlist = await runAgent(prompt, mnemonic); 
-  res.json({ final_playlist: playlist });
+  const { playlist, receipts } = await runAgent(prompt, mnemonic); 
+  res.json({ outcome: 'OK', final_playlist: playlist, playlist_receipts: receipts });
 });
 
 app.post('/verify', async (req, res) => {

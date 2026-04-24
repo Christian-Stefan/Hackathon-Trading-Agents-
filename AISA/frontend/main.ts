@@ -144,9 +144,16 @@ const scene = w.createScene({
             }
             
             const data = await response.json();
-            return [{ type: "text", content: `Playlist complete! You can view it here:` },
-                    { type: "text", content: `${data.final_playlist}`}
-            ];
+
+            if (data.outcome == 'OK') {
+                return [{ type: "text", content: `Playlist complete! You can view it here:` },
+                    { type: "text", content: `${data.final_playlist}`},
+                    { type: "text", content: `Receipts:`},
+                    { type: "text", content: `${data.playlist_receipts}`}
+                ];
+            } else {
+                return [{type: "text", content: `Error: ${data.outcome}`}];
+            }
         } else {
             return [{ type: "text", content: `Request terminated.`}];
         }
