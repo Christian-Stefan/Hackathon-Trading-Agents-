@@ -42,6 +42,8 @@ async function runAgent(userPrompt, ows_mnemonic) {
     console.log(`🛠️  Gemini decided to call: ${call.name}(${JSON.stringify(call.args)})`);
 
     const result = await mcpClient.callTool({ name: call.name, arguments: call.args });
+    console.log("📦 Raw MCP response:", result);
+    console.log("📦 Content[0].text:", result.content[0].text);
     
     // Parse the ENTIRE array of tracks, removing the hardcoded [0]
     const tracks = JSON.parse(result.content[0].text);
